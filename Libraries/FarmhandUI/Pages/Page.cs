@@ -35,10 +35,22 @@ namespace Farmhand.UI.Pages
                 {
                     var manifestFile = reader.ReadToEnd();
                     var component = JsonConvert.DeserializeObject<ComponentDefinition>(manifestFile);
+                    PageDefinitionRegistry.RegisterItem(component.Name, component);
                 }
                 form.Dispose();
             }
-                
+
+            foreach (var form in ApplicationResourcesUtility.LoadInternalResources("^\\s*.*\\.PageControl\\.json*\\s*$"))
+            {
+                using (var reader = new StreamReader(form))
+                {
+                    var manifestFile = reader.ReadToEnd();
+                    var component = JsonConvert.DeserializeObject<ComponentDefinition>(manifestFile);
+                    PageDefinitionRegistry.RegisterItem(component.Name, component);
+                }
+                form.Dispose();
+            }
+
             using (var modMenu = ApplicationResourcesUtility.LoadInternalResource("Farmhand.UI.ApiPages.ModMenu.json"))
             {
                 Pages.Add(LoadComponentFromManifest(modMenu));
